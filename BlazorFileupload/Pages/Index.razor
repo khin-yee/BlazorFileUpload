@@ -1,0 +1,72 @@
+﻿@page "/"
+@inject IConfiguration config
+@using BlazorFileupload.Data
+@using Microsoft.AspNetCore.Components.Forms
+<PageTitle>File Upload DemoApp</PageTitle>
+
+<h1>File Upload</h1>
+<EditForm Model="newCustomer">
+    <div>
+        <label for="firstName">First Name:</label>
+        <InputText id="firstName" class="form-control" @bind-Value="newCustomer.FirstName" />
+    </div>
+    <div>
+        <label for="lastName">Last Name:</label>
+        <InputText id="lastName" class="form-control" @bind-Value="newCustomer.LastName" />
+    </div>
+    <div>
+        <label for="profilePicture">Profile Picture:</label>
+        <InputFile OnChange="@LoadFiles" class="form-control" multiple accept=".png,.jpg" />
+    </div>
+    <button class="btn btn-primary mt-3" type="submit">Create Customer</button>
+</EditForm>
+
+@if (errors.Count > 0)
+{
+    <h2>Errors</h2>
+    <ul class="text-danger">
+        @foreach (var error in errors)
+        {
+            <li>@error</li>
+        }
+    </ul>
+}
+
+@code {
+    private long maxFileSize = 1024 * 1024 * 3;//3MB
+    private int maxAllowedFiles = 3;
+    private List<string> errors = new();
+    private CustomerModel newCustomer = new();
+    private IBrowserFile? file;
+
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        file = e.File;
+    }
+    private async Task<string> CaptureFile()
+    {
+        if(file is null)
+        {
+            return "";
+        }
+        try
+        {
+            string newFileName = Path.ChangeExtension(
+            Path.GetRandomFileName(),
+            Path.GetExtension(file.Name));
+            var path = Path.Combine(config.GetValue<string>("FileStorage")!, "tcorey", newFileName);
+            string relativePath = Path.Combine("test",newFileName);
+            Directory.CreateDirectory(Path.Combine(config.GetValue<string>("FileStorage")!, "tcorey"));
+            await using FileStream fs = new(path, FileMode.Create);
+            await file.OpenReadStream(maxFileSize).CopyToAsync(fs);
+            return relativePath;
+        }
+        catch (Exception ex)
+        {
+            errors.Add($"File:{file.Name}Error:{ex.Message}");
+            throw ex;
+        }
+
+
+    }
+}

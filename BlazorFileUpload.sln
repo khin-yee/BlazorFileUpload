@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.34928.147
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorFileupload", "BlazorFileupload\BlazorFileupload.csproj", "{525D9D9A-C792-4C59-A109-A5E4374E0E70}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{525D9D9A-C792-4C59-A109-A5E4374E0E70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{525D9D9A-C792-4C59-A109-A5E4374E0E70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{525D9D9A-C792-4C59-A109-A5E4374E0E70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{525D9D9A-C792-4C59-A109-A5E4374E0E70}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {00B1DBB7-CA6D-41CC-B331-2CCFC88851EA}
+	EndGlobalSection
+EndGlobal
