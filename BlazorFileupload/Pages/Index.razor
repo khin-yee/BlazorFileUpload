@@ -20,9 +20,13 @@
         <label for="profilePicture">Profile Picture:</label>
         <InputFile OnChange="@LoadFiles" class="form-control" multiple accept=".png,.jpg" />
     </div>
+    <div>
+        <label for="lastName">User Name:</label>
+        <InputText id="UserName" class="form-control" @bind-Value="newCustomer.UserName" />
+    </div>
     <button class="btn btn-primary mt-3" type="submit">Create Customer</button>
 </EditForm>
-
+<br />
 @if (errors.Count > 0)
 {
     <h2>Errors</h2>
@@ -33,13 +37,58 @@
         }
     </ul>
 }
+@if(customers is not null)
+{
+    <h2>Existing Customers</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <td>Id</td>
+                <td>FirstName</td>
+                <td>LastName</td>
+                <td>FileName</td>
+                <td>UserName</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach( var cus in customers)
+            {
+                <tr>
+                    <td>@cus.Id</td>
+                    <td>@cus.FirstName</td>
+                    <td>@cus.LastName</td> 
+                    <td>
+                        @if(string.IsNullOrEmpty(cus.FileName)== false)
+                        {
+                            <img src="@CreateFullPath(cus.FileName)" width="50" />
+                        }
+                    </td>
+                    <td>@cus.UserName</td>
+                </tr>
+            }
+        </tbody>
+     </table>
+}
 
 @code {
-    private long maxFileSize = 1024 * 1024 * 3;//3MB
-                                               //private int maxAllowedFiles = 3;
+    private long maxFileSize = 1024 * 1024 * 3;//3MB       
     private List<string> errors = new();
     private CustomerModel newCustomer = new();
     private IBrowserFile? file;
+    private List<CustomerModel>? customers;
+    private async Task LoadCustomers()
+    {
+        customers = await sql.LoadData<CustomerModel>("dbo.spCustomer_GetAll", "Default", null);
+    }
+    private string CreateFullPath(string relativepath)
+    {
+        var tspath = Path.Combine(config.GetValue<string>("WebStorageRoot")!, relativepath);
+        return tspath;
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCustomers();
+    }
     private async Task SubmitForm()
     {
         try
@@ -74,7 +123,7 @@
             Path.GetRandomFileName(),
             Path.GetExtension(file.Name));
             var path = Path.Combine(config.GetValue<string>("FileStorage")!, "BlazorTestFile", newFileName);
-            string relativePath = Path.Combine("test",newFileName);
+            string relativePath = newFileName;
             Directory.CreateDirectory(Path.Combine(config.GetValue<string>("FileStorage")!, "BlazorTestFile"));
             await using FileStream fs = new(path, FileMode.Create);
             await file.OpenReadStream(maxFileSize).CopyToAsync(fs);
