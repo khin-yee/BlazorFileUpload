@@ -1,11 +1,13 @@
 ﻿@page "/"
-@inject IConfiguration config
-@using BlazorFileupload.Data
-@using Microsoft.AspNetCore.Components.Forms
+@inject IConfiguration config;
+@using BlazorFileupload.Data;
+@using UploadFilesLibrary;
+@inject ISqlDataAccess sql;
+@using Microsoft.AspNetCore.Components.Forms;
 <PageTitle>File Upload DemoApp</PageTitle>
 
 <h1>File Upload</h1>
-<EditForm Model="newCustomer">
+<EditForm Model="newCustomer" OnValidSubmit="SubmitForm">
     <div>
         <label for="firstName">First Name:</label>
         <InputText id="firstName" class="form-control" @bind-Value="newCustomer.FirstName" />
@@ -34,11 +36,28 @@
 
 @code {
     private long maxFileSize = 1024 * 1024 * 3;//3MB
-    private int maxAllowedFiles = 3;
+                                               //private int maxAllowedFiles = 3;
     private List<string> errors = new();
     private CustomerModel newCustomer = new();
     private IBrowserFile? file;
+    private async Task SubmitForm()
+    {
+        try
+        {
+            string relativePath = await CaptureFile();
+            newCustomer.FileName = relativePath;
+            await sql.SaveData("dbo.Customer_Insert","Default",newCustomer);
 
+            newCustomer = new();
+            file = null;
+            errors.Clear();
+        }
+        catch(Exception ex)
+        {
+            errors.Add($"Error:{ex.Message}");
+        }
+    }
+        
     private async Task LoadFiles(InputFileChangeEventArgs e)
     {
         file = e.File;
@@ -54,9 +73,9 @@
             string newFileName = Path.ChangeExtension(
             Path.GetRandomFileName(),
             Path.GetExtension(file.Name));
-            var path = Path.Combine(config.GetValue<string>("FileStorage")!, "tcorey", newFileName);
+            var path = Path.Combine(config.GetValue<string>("FileStorage")!, "BlazorTestFile", newFileName);
             string relativePath = Path.Combine("test",newFileName);
-            Directory.CreateDirectory(Path.Combine(config.GetValue<string>("FileStorage")!, "tcorey"));
+            Directory.CreateDirectory(Path.Combine(config.GetValue<string>("FileStorage")!, "BlazorTestFile"));
             await using FileStream fs = new(path, FileMode.Create);
             await file.OpenReadStream(maxFileSize).CopyToAsync(fs);
             return relativePath;
