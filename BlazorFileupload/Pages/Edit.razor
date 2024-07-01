@@ -1,4 +1,4 @@
-﻿@page "/"
+﻿@page "/Edit"
 @inject IConfiguration config;
 @using BlazorFileupload.Data;
 @using UploadFilesLibrary;
@@ -39,7 +39,7 @@
         }
     </ul>
 }
-@if (customers is not null)
+@if(customers is not null)
 {
     <h2>Existing Customers</h2>
     <table class="table table-bordered">
@@ -54,56 +54,46 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var cus in customers)
+            @foreach( var cus in customers)
             {
                 <tr>
                     <td>@cus.Id</td>
                     <td>@cus.FirstName</td>
-                    <td>@cus.LastName</td>
+                    <td>@cus.LastName</td> 
                     <td>
-                        @if (string.IsNullOrEmpty(cus.FileName) == false)
+                        @if(string.IsNullOrEmpty(cus.FileName)== false)
                         {
                             <img src="@CreateFullPath(cus.FileName)" width="50" />
                         }
                     </td>
                     <td>@cus.UserName</td>
-                    <td>
-                        <button class="btn btn-outline-success" @onclick="() => DeleteFile(cus.Id)">Delete</button>
-                        <button class="btn btn-outline-success" @onclick="() => EditFile()">Edit</button>
+                    <td><button class="btn btn-outline-success" @onclick="() => DeleteFile(cus.Id)">Delete</button>
+                        <button class="btn btn-outline-success" @onclick="() => DeleteFile(cus.Id)">Edit</button>               
                     </td>
                 </tr>
             }
         </tbody>
-    </table>
+     </table>
 }
 
 @code {
-    private long maxFileSize = 1024 * 1024 * 3;//3MB
+    private long maxFileSize = 1024 * 1024 * 3;//3MB       
     private List<string> errors = new();
     private CustomerModel newCustomer = new();
     private IBrowserFile? file;
     private List<CustomerModel>? customers;
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCustomers();
+    }
     private async Task LoadCustomers()
     {
         customers = await sql.LoadData<CustomerModel>("dbo.spCustomer_GetAll", "Default", null);
         var test = customers;
+
     }
-    private string CreateFullPath(string relativepath)
-    {
-        var tspath = Path.Combine(config.GetValue<string>("WebStorageRoot")!, relativepath);
-        return tspath;
-    }
-    private async Task EditFile()
-    {
-        try
-        {
-            NavManager.NavigateTo("/Edit");
-        }
-        catch (Exception ex)
-        {
-            errors.Add($"Error:{ex.Message}");
-        }
-    }
+
+
     private async Task DeleteFile(int id)
     {
         try
@@ -116,36 +106,38 @@
             errors.Add($"Error:{ex.Message}");
         }
     }
-    protected override async Task OnInitializedAsync()
+    private string CreateFullPath(string relativepath)
     {
-        await LoadCustomers();
+        var tspath = Path.Combine(config.GetValue<string>("WebStorageRoot")!, relativepath);
+        return tspath;
     }
+  
     private async Task SubmitForm()
     {
         try
         {
             string relativePath = await CaptureFile();
             newCustomer.FileName = relativePath;
-            await sql.SaveData("dbo.Customer_Insert", "Default", newCustomer);
+            await sql.SaveData("dbo.Customer_Insert","Default",newCustomer);
 
             newCustomer = new();
             file = null;
             errors.Clear();
             NavManager.NavigateTo("/Redirect");
         }
-        catch (Exception ex)
+        catch(Exception ex)
         {
             errors.Add($"Error:{ex.Message}");
         }
     }
-
+        
     private async Task LoadFiles(InputFileChangeEventArgs e)
     {
         file = e.File;
     }
     private async Task<string> CaptureFile()
     {
-        if (file is null)
+        if(file is null)
         {
             return "";
         }

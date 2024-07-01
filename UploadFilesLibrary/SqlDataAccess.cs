@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,6 +31,16 @@ namespace UploadFilesLibrary
                 throw new Exception($"Missing connection string at {connectionName}");
             var connection = new SqlConnection(connectionString);
             await connection.ExecuteAsync(storedProc, parameters, commandType: System.Data.CommandType.StoredProcedure);
+        }
+        public async Task DeleteData(string storedProcedure, string connectionStringName, int id)
+        {
+            using (IDbConnection connection = new SqlConnection(_config.GetConnectionString(connectionStringName)))
+            {
+                var parameters = new DynamicParameters();
+                parameters.Add("@id", id); // Ensure the parameter name matches the stored procedure's parameter
+
+                await connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
+            }
         }
     }
 }

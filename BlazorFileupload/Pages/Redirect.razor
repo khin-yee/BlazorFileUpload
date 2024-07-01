@@ -1,4 +1,4 @@
-﻿@page "/"
+﻿@page "/Redirect"
 @inject IConfiguration config;
 @using BlazorFileupload.Data;
 @using UploadFilesLibrary;
@@ -69,7 +69,7 @@
                     <td>@cus.UserName</td>
                     <td>
                         <button class="btn btn-outline-success" @onclick="() => DeleteFile(cus.Id)">Delete</button>
-                        <button class="btn btn-outline-success" @onclick="() => EditFile()">Edit</button>
+                        <button class="btn btn-outline-success">Edit</button>
                     </td>
                 </tr>
             }
@@ -86,32 +86,20 @@
     private async Task LoadCustomers()
     {
         customers = await sql.LoadData<CustomerModel>("dbo.spCustomer_GetAll", "Default", null);
-        var test = customers;
     }
     private string CreateFullPath(string relativepath)
     {
         var tspath = Path.Combine(config.GetValue<string>("WebStorageRoot")!, relativepath);
         return tspath;
     }
-    private async Task EditFile()
-    {
-        try
-        {
-            NavManager.NavigateTo("/Edit");
-        }
-        catch (Exception ex)
-        {
-            errors.Add($"Error:{ex.Message}");
-        }
-    }
     private async Task DeleteFile(int id)
     {
         try
         {
-            await sql.DeleteData("dbo.spCustomer_Delete", "Default", id);
-            NavManager.NavigateTo("/Redirect");
+            await sql.DeleteData("dbo.spCustomer_Delete", "Default",id);
+            NavManager.NavigateTo("/");
         }
-        catch (Exception ex)
+        catch(Exception ex)
         {
             errors.Add($"Error:{ex.Message}");
         }
@@ -131,7 +119,7 @@
             newCustomer = new();
             file = null;
             errors.Clear();
-            NavManager.NavigateTo("/Redirect");
+            NavManager.NavigateTo("/");
         }
         catch (Exception ex)
         {
