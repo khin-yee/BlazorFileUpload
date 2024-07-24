@@ -16,7 +16,7 @@ RUN dotnet restore "src/BlazorFileupload/BlazorFileupload.csproj"
 
 # Copy the rest of the code and build the application
 COPY . .
-WORKDIR "src/src/BlazorFileupload"
+WORKDIR "src/BlazorFileupload"
 RUN dotnet build "BlazorFileupload.csproj" -c Release -o /app/build
 
 # Publish stage
