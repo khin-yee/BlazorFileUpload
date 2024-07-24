@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.34928.147
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorFileupload", "BlazorFileupload\BlazorFileupload.csproj", "{525D9D9A-C792-4C59-A109-A5E4374E0E70}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorFileupload", "src\BlazorFileupload\BlazorFileupload.csproj", "{525D9D9A-C792-4C59-A109-A5E4374E0E70}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UploadFilesLibrary", "UploadFilesLibrary\UploadFilesLibrary.csproj", "{9DDF16CA-75C0-48E3-94EF-52779B1959E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UploadFilesLibrary", "src\UploadFilesLibrary\UploadFilesLibrary.csproj", "{9DDF16CA-75C0-48E3-94EF-52779B1959E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
