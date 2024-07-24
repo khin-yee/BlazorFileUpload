@@ -6,12 +6,12 @@ EXPOSE 8080
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-WORKDIR /src
-COPY ["Blazor/BlazorFileUpload/BlazorFileUpload.csproj", "Blazor/BlazorFileUpload/"]
+WORKDIR /BlazorFileUpload
+COPY ["BlazorFileUpload/BlazorFileUpload.csproj", "BlazorFileUpload/"]
 
 RUN dotnet restore "Blazor/BlazorFileUpload/BlazorFileUpload.csproj"
 COPY . .
-WORKDIR "/src/src/BlazorFileUpload.Api"
+WORKDIR "/BlazorFileUpload/BlazorFileUpload/BlazorFileUpload.Api"
 RUN dotnet build "BlazorFileUplaod.csproj" -c Release -o /app/build
 
 FROM build AS publish
