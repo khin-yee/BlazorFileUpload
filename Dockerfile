@@ -9,7 +9,7 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /BlazorFileUpload
 COPY ["BlazorFileUpload/BlazorFileUpload.csproj", "BlazorFileUpload/"]
 
-RUN dotnet restore "Blazor/BlazorFileUpload/BlazorFileUpload.csproj"
+RUN dotnet restore "BlazorFileUpload/BlazorFileUpload.csproj"
 COPY . .
 WORKDIR "/BlazorFileUpload/BlazorFileUpload/BlazorFileUpload.Api"
 RUN dotnet build "BlazorFileUplaod.csproj" -c Release -o /app/build
