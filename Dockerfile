@@ -8,6 +8,8 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /BlazorFileUpload
 COPY ["BlazorFileupload/BlazorFileupload.csproj", "BlazorFileupload/"]
+COPY ["UploadFilesLibrary/UploadFilesLibrary.csproj", "UploadFilesLibrary/"]
+
 
 RUN dotnet restore "BlazorFileupload/BlazorFileupload.csproj"
 COPY . .
@@ -21,3 +23,5 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "BlazorFileupload.dll"]
+
+UploadFilesLibrary
