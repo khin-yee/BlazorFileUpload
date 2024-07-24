@@ -6,16 +6,17 @@ EXPOSE 443
 
 # Build stage
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-WORKDIR /BlazorFileUpload
+WORKDIR /src
 
 # Copy project files and restore dependencies
-COPY ["BlazorFileupload/BlazorFileupload.csproj", "BlazorFileupload/"]
-COPY ["UploadFilesLibrary/UploadFilesLibrary.csproj", "UploadFilesLibrary/"]
-RUN dotnet restore "BlazorFileupload/BlazorFileupload.csproj"
+COPY ["src/BlazorFileupload/BlazorFileupload.csproj", "src/BlazorFileupload/"]
+COPY ["src/UploadFilesLibrary/UploadFilesLibrary.csproj", "src/UploadFilesLibrary/"]
+
+RUN dotnet restore "src/BlazorFileupload/BlazorFileupload.csproj"
 
 # Copy the rest of the code and build the application
 COPY . .
-WORKDIR "/BlazorFileupload/BlazorFileupload"
+WORKDIR "src/src/BlazorFileupload"
 RUN dotnet build "BlazorFileupload.csproj" -c Release -o /app/build
 
 # Publish stage
